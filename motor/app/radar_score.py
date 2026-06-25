@@ -16,6 +16,69 @@ def _clamp(value: float, lo: float = 0.0, hi: float = 100.0) -> float:
     return max(lo, min(hi, value))
 
 
+# Palavras comuns (PT/EN) ignoradas na extração de temas.
+STOPWORDS = {
+    "a", "o", "e", "de", "da", "do", "que", "em", "um", "uma", "para", "por",
+    "com", "no", "na", "os", "as", "se", "dos", "das", "ao", "mais", "como",
+    "the", "of", "and", "to", "in", "a", "is", "for", "on", "you", "your",
+    "this", "that", "it", "with", "shorts", "short", "shfor", "video", "videos",
+    "vc", "voce", "você", "ele", "ela", "isso", "foi", "ser", "tem", "sua",
+    "seu", "são", "sao", "não", "nao", "sim", "qual", "quem", "onde", "porque",
+    "what", "why", "how", "when", "where", "who", "did", "know", "my", "i",
+}
+
+
+def _extract_keywords(videos: list[dict], limit: int = 16) -> list[dict]:
+    counts: dict[str, int] = {}
+    weight: dict[str, float] = {}
+    for video in videos:
+        text = str(video.get("title") or "")
+        opp = float(video.get("opportunity_score") or 0)
+        for raw in re.findall(r"#?[\wÀ-ÿ]+", text.lower()):
+            token = raw.strip("#")
+            if len(token) < 3 or token in STOPWORDS or token.isdigit():
+                continue
+            counts[token] = counts.get(token, 0) + 1
+            weight[token] = weight.get(token, 0.0) + opp
+    items = [
+        {"term": term, "count": count, "weight": round(weight[term])}
+        for term, count in counts.items()
+        if count >= 2
+    ]
+    items.sort(key=lambda item: (item["count"], item["weight"]), reverse=True)
+    return items[:limit]
+
+
+def _aggregate_channels(videos: list[dict], limit: int = 12) -> list[dict]:
+    channels: dict[str, dict] = {}
+    for video in videos:
+        cid = video.get("channel_id")
+        if not cid:
+            continue
+        channel = channels.setdefault(
+            cid,
+            {
+                "channel_id": cid,
+                "title": video.get("channel_title", ""),
+                "subscribers": int(video.get("subscribers") or 0),
+                "url": video.get("channel_url", ""),
+                "outlier_count": 0,
+                "best_multiplier": 0.0,
+                "top_opportunity": 0,
+                "sample_views": 0,
+            },
+        )
+        channel["outlier_count"] += 1
+        channel["best_multiplier"] = max(channel["best_multiplier"], float(video.get("outlier_multiplier") or 0))
+        channel["top_opportunity"] = max(channel["top_opportunity"], int(video.get("opportunity_score") or 0))
+        channel["sample_views"] += int(video.get("views") or 0)
+    result = list(channels.values())
+    for channel in result:
+        channel["average_views"] = round(channel["sample_views"] / max(1, channel["outlier_count"]))
+    result.sort(key=lambda c: (c["outlier_count"], c["best_multiplier"], c["top_opportunity"]), reverse=True)
+    return result[:limit]
+
+
 def _percentiles(values: list[float]) -> list[float]:
     if not values:
         return []
@@ -237,6 +300,8 @@ def analyze(query: str, raw: list[dict], hunt_mode: str, period_days: int) -> di
             "tracked_videos": tracked,
         },
         "videos": videos,
+        "channels": _aggregate_channels(videos),
+        "keywords": _extract_keywords(videos),
         "methodology": {
             "outlier_multiplier": "Views do vídeo dividido pela média de views por vídeo do canal (ou inscritos). Acima de ~5x já é fora da curva.",
             "viral_score": "40% alcance, 35% velocidade (VPH), 25% recência.",

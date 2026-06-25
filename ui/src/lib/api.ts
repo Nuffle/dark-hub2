@@ -56,6 +56,23 @@ export type RadarVideo = {
   signal: "exploding" | "rising" | "watch";
 };
 
+export type RadarChannel = {
+  channel_id: string;
+  title: string;
+  subscribers: number;
+  url: string;
+  outlier_count: number;
+  best_multiplier: number;
+  top_opportunity: number;
+  average_views: number;
+};
+
+export type RadarKeyword = {
+  term: string;
+  count: number;
+  weight: number;
+};
+
 export type RadarResult = {
   query: string;
   provider: string;
@@ -72,6 +89,8 @@ export type RadarResult = {
     tracked_videos: number;
   };
   videos: RadarVideo[];
+  channels: RadarChannel[];
+  keywords: RadarKeyword[];
   methodology: Record<string, string>;
 };
 

@@ -200,7 +200,8 @@ Fonte de dados escolhida: **YouTube Data API** (oficial, precisa).
 - [x] Ordenação (oportunidade/multiplier/views/VPH/recência) + filtro "máx. inscritos"
 - [x] Painel de detalhe do vídeo (métricas completas + decomposição do score + ações)
 - [x] Modo "Ranking geral" (descobrir virais sem digitar tema) — achou outlier de 278x
-- [ ] Configurar chave da API pela interface (hoje é importada do app antigo)
+- [x] Insights: "Temas em alta" (nuvem de palavras clicável) + "Canais reveladores"
+- [x] Configurar chave da API pela interface (engrenagem)
 - [ ] "Copiar ideia" virar envio direto para Anotações (quando o módulo existir)
 - [ ] Snapshots de VPH real reforçando o score ao longo do tempo (backend já grava)
 - [ ] Encaixar Tauri (Rust já instalado) — empacotar como app desktop

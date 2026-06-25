@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { Search, Loader2, Zap, Gauge, History, Bookmark, Trophy } from "lucide-react";
+import {
+  Search,
+  Loader2,
+  Zap,
+  Gauge,
+  History,
+  Bookmark,
+  Trophy,
+  Lightbulb,
+  Settings,
+} from "lucide-react";
 import {
   api,
   type RadarConfig,
@@ -14,6 +24,8 @@ import { cn } from "@/lib/utils";
 import { VideoCard } from "./VideoCard";
 import { SavedCard } from "./SavedCard";
 import { VideoDetail } from "./VideoDetail";
+import { InsightsPanel } from "./InsightsPanel";
+import { ConfigDialog } from "./ConfigDialog";
 
 const HUNT_MODES = [
   { id: "early", label: "Garimpo", hint: "Prioriza outliers em canais pequenos" },
@@ -75,7 +87,8 @@ export function RadarWorkspace() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<RadarResult | null>(null);
 
-  const [view, setView] = useState<"resultados" | "salvos">("resultados");
+  const [view, setView] = useState<"resultados" | "insights" | "salvos">("resultados");
+  const [showConfig, setShowConfig] = useState(false);
   const [sort, setSort] = useState<SortId>("opportunity");
   const [maxSubs, setMaxSubs] = useState(0);
 
@@ -100,17 +113,19 @@ export function RadarWorkspace() {
       .catch(() => {});
   }
 
-  async function runSearch() {
-    if (query.trim().length < 2) {
+  async function runSearch(override?: string) {
+    const q = (override ?? query).trim();
+    if (q.length < 2) {
       setError("Digite um tema com pelo menos 2 caracteres.");
       return;
     }
+    if (override) setQuery(override);
     setLoading(true);
     setError(null);
     setView("resultados");
     try {
       const res = await api.radar.search({
-        query: query.trim(),
+        query: q,
         period_days: period,
         video_format: "short",
         min_views: minViews,
@@ -266,6 +281,13 @@ export function RadarWorkspace() {
           </div>
 
           <button
+            onClick={() => setShowConfig(true)}
+            title="Configurar chave da YouTube API"
+            className="flex h-full items-center rounded-lg border border-border bg-surface-2 px-3 text-muted hover:text-foreground"
+          >
+            <Settings className="h-4 w-4" />
+          </button>
+          <button
             onClick={runRanking}
             disabled={loading}
             title="Descobrir virais fora da curva sem digitar um tema"
@@ -275,7 +297,7 @@ export function RadarWorkspace() {
             Ranking
           </button>
           <button
-            onClick={runSearch}
+            onClick={() => runSearch()}
             disabled={loading}
             className="flex items-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
           >
@@ -363,6 +385,15 @@ export function RadarWorkspace() {
             Resultados{result ? ` (${displayed.length})` : ""}
           </button>
           <button
+            onClick={() => setView("insights")}
+            className={cn(
+              "flex items-center gap-1 rounded-md px-3 py-1 text-xs font-medium transition-colors",
+              view === "insights" ? "bg-surface-2 text-foreground" : "text-muted hover:text-foreground",
+            )}
+          >
+            <Lightbulb className="h-3 w-3" /> Insights
+          </button>
+          <button
             onClick={() => setView("salvos")}
             className={cn(
               "flex items-center gap-1 rounded-md px-3 py-1 text-xs font-medium transition-colors",
@@ -415,7 +446,19 @@ export function RadarWorkspace() {
 
       {/* Conteúdo */}
       <div className="flex-1 overflow-auto">
-        {view === "salvos" ? (
+        {view === "insights" ? (
+          result ? (
+            <InsightsPanel
+              channels={result.channels}
+              keywords={result.keywords}
+              onPickKeyword={(term) => runSearch(term)}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted">
+              Faça uma busca para ver temas em alta e canais reveladores.
+            </div>
+          )
+        ) : view === "salvos" ? (
           savedList.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 pb-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {savedList.map((s) => (
@@ -459,6 +502,13 @@ export function RadarWorkspace() {
           saved={savedIds.has(selected.video_id)}
           onToggleSave={toggleSave}
           onClose={() => setSelected(null)}
+        />
+      )}
+
+      {showConfig && (
+        <ConfigDialog
+          onClose={() => setShowConfig(false)}
+          onSaved={(c) => setConfig(c)}
         />
       )}
     </>
