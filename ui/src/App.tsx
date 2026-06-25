@@ -5,6 +5,7 @@ import { BackupWorkspace } from "@/components/BackupWorkspace";
 import { WorldTimesWorkspace } from "@/components/WorldTimesWorkspace";
 import { ChannelsWorkspace } from "@/components/ChannelsWorkspace";
 import { NotesWorkspace } from "@/components/NotesWorkspace";
+import { SoundsWorkspace } from "@/components/SoundsWorkspace";
 import { MODULES, type ModuleId } from "@/modules";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,8 @@ export default function App() {
             <ChannelsWorkspace />
           ) : active === "anotacoes" ? (
             <NotesWorkspace />
+          ) : active === "sons" ? (
+            <SoundsWorkspace />
           ) : (
             <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-border text-muted">
               Módulo

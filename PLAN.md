@@ -116,11 +116,12 @@ Entidades principais (em D1, espelhadas em SQLite local):
 ### 4.1 Radar (PRIORIDADE 1 — ver seção 5 detalhada)
 Busca shorts virais fora da curva via YouTube Data API.
 
-### 4.2 Sons
-- Coleções/categorias, tags, favoritos
-- Preview com forma de onda, download
-- Local: arquivo + metadados; Cloud: R2 + D1
-- Limites de cota (igual ao atual: 9GB, 50MB/arquivo)
+### 4.2 Sons  ✅ FEITO
+- Upload (multipart, ≤50MB, só áudio), categorias, tags, favoritos
+- Busca/filtro, preview com player HTML5, download, remover
+- Arquivos em motor/data/sounds/; metadados no SQLite (no backup)
+- Cloud R2 para arquivos pesados: fase posterior (os áudios em si ainda
+  não entram no backup .json — só os metadados)
 
 ### 4.3 Anotações  ✅ FEITO
 - CRUD (lista + editor) com autosave (debounce); incluído no backup

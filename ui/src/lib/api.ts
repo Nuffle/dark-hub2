@@ -8,9 +8,13 @@ export type Health = {
 };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = new Headers(init?.headers);
+  if (!(init?.body instanceof FormData)) {
+    headers.set("Content-Type", "application/json");
+  }
   const response = await fetch(`/api${path}`, {
-    headers: { "Content-Type": "application/json" },
     ...init,
+    headers,
   });
   if (!response.ok) {
     const detail = await response.text().catch(() => "");
@@ -171,6 +175,33 @@ export type Note = {
   updated_at: string;
 };
 
+export type Sound = {
+  id: string;
+  name: string;
+  category: string;
+  tags: string;
+  favorite: number;
+  filename: string;
+  ext: string;
+  size_bytes: number;
+  duration_seconds: number;
+  created_at: string;
+};
+
+export type SoundInput = {
+  name: string;
+  category?: string;
+  tags?: string;
+  favorite?: boolean | number;
+};
+
+export type SoundUpload = {
+  file: File;
+  name: string;
+  category?: string;
+  tags?: string;
+};
+
 export const api = {
   health: () => request<Health>("/health"),
   channels: {
@@ -190,6 +221,23 @@ export const api = {
       request<Note>(`/notes/${id}`, { method: "PUT", body: JSON.stringify(data) }),
     remove: (id: string) =>
       request<{ deleted: string }>(`/notes/${id}`, { method: "DELETE" }),
+  },
+  sounds: {
+    list: () => request<Sound[]>("/sounds"),
+    upload: (data: SoundUpload) => {
+      const form = new FormData();
+      form.append("file", data.file);
+      form.append("name", data.name);
+      form.append("category", data.category ?? "");
+      form.append("tags", data.tags ?? "");
+      return request<Sound>("/sounds/upload", { method: "POST", body: form });
+    },
+    update: (id: string, data: SoundInput) =>
+      request<Sound>(`/sounds/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+    remove: (id: string) =>
+      request<{ deleted: string }>(`/sounds/${id}`, { method: "DELETE" }),
+    streamUrl: (id: string) => `/api/sounds/${id}/stream`,
+    downloadUrl: (id: string) => `/api/sounds/${id}/download`,
   },
   backup: {
     summary: () => request<BackupSummary>("/backup/summary"),
@@ -236,4 +284,3 @@ export const api = {
       }),
   },
 };
-

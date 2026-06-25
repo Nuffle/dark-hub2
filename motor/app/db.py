@@ -86,5 +86,18 @@ def initialize() -> None:
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS sounds (
+                id TEXT PRIMARY KEY,
+                name TEXT,
+                category TEXT DEFAULT '',
+                tags TEXT DEFAULT '',
+                favorite INTEGER DEFAULT 0,
+                filename TEXT,
+                ext TEXT,
+                size_bytes INTEGER DEFAULT 0,
+                duration_seconds REAL DEFAULT 0,
+                created_at TEXT NOT NULL
+            );
             """
         )

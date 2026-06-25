@@ -19,6 +19,8 @@ EXPORT_TABLES = [
     "settings",
     "channels",
     "notes",
+    # Apenas metadados; os arquivos de audio em data/sounds/ ainda nao entram no backup.
+    "sounds",
     "radar_outliers",
     "radar_runs",
     "video_snapshots",
