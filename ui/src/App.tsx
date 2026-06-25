@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { RadarWorkspace } from "@/components/radar/RadarWorkspace";
 import { BackupWorkspace } from "@/components/BackupWorkspace";
+import { WorldTimesWorkspace } from "@/components/WorldTimesWorkspace";
 import { MODULES, type ModuleId } from "@/modules";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -68,6 +69,8 @@ export default function App() {
             <RadarWorkspace />
           ) : active === "nuvem" ? (
             <BackupWorkspace />
+          ) : active === "horarios" ? (
+            <WorldTimesWorkspace />
           ) : (
             <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-border text-muted">
               Módulo

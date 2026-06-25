@@ -126,10 +126,11 @@ Busca shorts virais fora da curva via YouTube Data API.
 - CRUD simples, tags, busca, autosave
 - Sincroniza com a nuvem
 
-### 4.4 Horários do mundo
-- Relógios dos principais países/mercados
-- "Se eu postar agora aqui, que horas sai lá"
-- Sugestão de melhores janelas de post por mercado
+### 4.4 Horários do mundo  ✅ FEITO
+- Relógios ao vivo dos principais mercados (12 países), dia/noite, offset
+- Simulador "se eu postar às X aqui, que horas sai lá" (com virada de dia)
+- Marcadores de janela: horário nobre / almoço / madrugada
+- 100% frontend (fusos do navegador), sem backend
 
 ### 4.5 Canais
 - Adicionar/remover
