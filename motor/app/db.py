@@ -18,6 +18,20 @@ def connect() -> sqlite3.Connection:
     return connection
 
 
+def _ensure_column(
+    connection: sqlite3.Connection,
+    table: str,
+    column: str,
+    definition: str,
+) -> None:
+    columns = {
+        row["name"]
+        for row in connection.execute(f"PRAGMA table_info({table})").fetchall()
+    }
+    if column not in columns:
+        connection.execute(f"ALTER TABLE {table} ADD COLUMN {definition}")
+
+
 def initialize() -> None:
     with connect() as connection:
         connection.executescript(
@@ -73,6 +87,7 @@ def initialize() -> None:
                 name TEXT NOT NULL,
                 channel_id TEXT NOT NULL DEFAULT '',
                 url TEXT NOT NULL DEFAULT '',
+                yt_schedule_url TEXT NOT NULL DEFAULT '',
                 first_video_date TEXT NOT NULL DEFAULT '',
                 niche TEXT NOT NULL DEFAULT '',
                 created_at TEXT NOT NULL
@@ -92,8 +107,19 @@ def initialize() -> None:
                 id TEXT PRIMARY KEY,
                 channel_id TEXT NOT NULL,
                 target_time TEXT NOT NULL DEFAULT '',
+                source TEXT NOT NULL DEFAULT 'manual',
+                sequence_index INTEGER NOT NULL DEFAULT 0,
                 last_posted_date TEXT NOT NULL DEFAULT '',
                 created_at TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS post_channel_settings (
+                channel_id TEXT PRIMARY KEY,
+                first_time TEXT NOT NULL DEFAULT '',
+                interval_hours REAL NOT NULL DEFAULT 6,
+                use_yt_schedule INTEGER NOT NULL DEFAULT 0,
+                yt_schedule_url TEXT NOT NULL DEFAULT '',
+                updated_at TEXT NOT NULL
             );
 
             CREATE TABLE IF NOT EXISTS sounds (
@@ -108,5 +134,40 @@ def initialize() -> None:
                 duration_seconds REAL DEFAULT 0,
                 created_at TEXT NOT NULL
             );
+            """
+        )
+        _ensure_column(
+            connection,
+            "post_slots",
+            "source",
+            "source TEXT NOT NULL DEFAULT 'manual'",
+        )
+        _ensure_column(
+            connection,
+            "post_slots",
+            "sequence_index",
+            "sequence_index INTEGER NOT NULL DEFAULT 0",
+        )
+        _ensure_column(
+            connection,
+            "channels",
+            "yt_schedule_url",
+            "yt_schedule_url TEXT NOT NULL DEFAULT ''",
+        )
+        connection.execute(
+            """
+            UPDATE channels
+            SET yt_schedule_url = (
+                SELECT yt_schedule_url
+                FROM post_channel_settings
+                WHERE post_channel_settings.channel_id = channels.id
+            )
+            WHERE yt_schedule_url = ''
+              AND EXISTS (
+                SELECT 1
+                FROM post_channel_settings
+                WHERE post_channel_settings.channel_id = channels.id
+                  AND post_channel_settings.yt_schedule_url != ''
+              )
             """
         )

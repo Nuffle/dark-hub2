@@ -20,6 +20,7 @@ EXPORT_TABLES = [
     "channels",
     "notes",
     "post_slots",
+    "post_channel_settings",
     # Apenas metadados; os arquivos de audio em data/sounds/ ainda nao entram no backup.
     "sounds",
     "radar_outliers",

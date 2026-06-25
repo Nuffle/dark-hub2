@@ -11,7 +11,14 @@ import {
 } from "lucide-react";
 import { api, type Channel, type ChannelInput } from "@/lib/api";
 
-const EMPTY: ChannelInput = { name: "", channel_id: "", url: "", first_video_date: "", niche: "" };
+const EMPTY: ChannelInput = {
+  name: "",
+  channel_id: "",
+  url: "",
+  yt_schedule_url: "",
+  first_video_date: "",
+  niche: "",
+};
 
 export function ChannelsWorkspace() {
   const [channels, setChannels] = useState<Channel[]>([]);
@@ -122,7 +129,7 @@ function ChannelCard({
         rel="noreferrer"
         className="flex items-center justify-center gap-2 rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm font-medium hover:border-primary/50"
       >
-        <ExternalLink className="h-4 w-4" /> Abrir Studio
+        <ExternalLink className="h-4 w-4" /> Studio
       </a>
     </div>
   );
@@ -143,6 +150,7 @@ function ChannelForm({
           name: channel.name,
           channel_id: channel.channel_id,
           url: channel.url,
+          yt_schedule_url: channel.yt_schedule_url,
           first_video_date: channel.first_video_date,
           niche: channel.niche,
         }
@@ -198,6 +206,14 @@ function ChannelForm({
               value={form.url}
               onChange={(e) => set("url", e.target.value)}
               placeholder="https://www.youtube.com/channel/UC..."
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+            />
+          </Field>
+          <Field label="Link da grade YT (YouTube Studio > Público)">
+            <input
+              value={form.yt_schedule_url}
+              onChange={(e) => set("yt_schedule_url", e.target.value)}
+              placeholder="https://studio.youtube.com/channel/UC.../analytics/tab-build_audience/period-default"
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
             />
           </Field>

@@ -152,6 +152,7 @@ export type Channel = {
   name: string;
   channel_id: string;
   url: string;
+  yt_schedule_url: string;
   first_video_date: string;
   niche: string;
   created_at: string;
@@ -163,6 +164,7 @@ export type ChannelInput = {
   name: string;
   channel_id?: string;
   url?: string;
+  yt_schedule_url?: string;
   first_video_date?: string;
   niche?: string;
 };
@@ -180,9 +182,32 @@ export type PostSlot = {
   channel_id: string;
   channel_name: string | null;
   target_time: string;
+  source: "manual" | "auto";
+  sequence_index: number;
   last_posted_date: string;
   created_at: string;
   posted_today: boolean;
+};
+
+export type PostSettings = {
+  channel_id: string;
+  first_time: string;
+  interval_hours: number;
+  use_yt_schedule: boolean;
+  yt_schedule_url: string;
+  updated_at: string;
+};
+
+export type PostSettingsInput = {
+  first_time: string;
+  interval_hours: number;
+  use_yt_schedule: boolean;
+  yt_schedule_url: string;
+};
+
+export type PostSettingsResult = {
+  settings: PostSettings;
+  slots: PostSlot[];
 };
 
 export type Sound = {
@@ -234,6 +259,12 @@ export const api = {
   },
   posts: {
     list: () => request<PostSlot[]>("/posts"),
+    settings: () => request<PostSettings[]>("/posts/settings"),
+    updateSettings: (channelId: string, data: PostSettingsInput) =>
+      request<PostSettingsResult>(`/posts/settings/${channelId}`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }),
     create: (channel_id: string, target_time: string) =>
       request<PostSlot>("/posts", {
         method: "POST",

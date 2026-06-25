@@ -17,6 +17,7 @@ class ChannelBody(BaseModel):
     name: str = Field(min_length=1)
     channel_id: str = ""
     url: str = ""
+    yt_schedule_url: str = ""
     first_video_date: str = ""  # AAAA-MM-DD
     niche: str = ""
 
@@ -63,10 +64,22 @@ def create_channel(body: ChannelBody):
     with db.connect() as connection:
         connection.execute(
             """
-            INSERT INTO channels (id, name, channel_id, url, first_video_date, niche, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO channels (
+                id, name, channel_id, url, yt_schedule_url,
+                first_video_date, niche, created_at
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
-            (new_id, body.name.strip(), channel_id, body.url.strip(), body.first_video_date.strip(), body.niche.strip(), _now()),
+            (
+                new_id,
+                body.name.strip(),
+                channel_id,
+                body.url.strip(),
+                body.yt_schedule_url.strip(),
+                body.first_video_date.strip(),
+                body.niche.strip(),
+                _now(),
+            ),
         )
         row = connection.execute("SELECT * FROM channels WHERE id = ?", (new_id,)).fetchone()
     return _decorate(dict(row))
@@ -81,10 +94,19 @@ def update_channel(channel_id: str, body: ChannelBody):
             raise HTTPException(404, "Canal não encontrado.")
         connection.execute(
             """
-            UPDATE channels SET name = ?, channel_id = ?, url = ?, first_video_date = ?, niche = ?
+            UPDATE channels
+            SET name = ?, channel_id = ?, url = ?, yt_schedule_url = ?, first_video_date = ?, niche = ?
             WHERE id = ?
             """,
-            (body.name.strip(), cid, body.url.strip(), body.first_video_date.strip(), body.niche.strip(), channel_id),
+            (
+                body.name.strip(),
+                cid,
+                body.url.strip(),
+                body.yt_schedule_url.strip(),
+                body.first_video_date.strip(),
+                body.niche.strip(),
+                channel_id,
+            ),
         )
         row = connection.execute("SELECT * FROM channels WHERE id = ?", (channel_id,)).fetchone()
     return _decorate(dict(row))
