@@ -137,11 +137,13 @@ Busca shorts virais fora da curva via YouTube Data API.
 - Botão "Abrir Studio" (ID UC… extraído da URL → studio.youtube.com/channel/ID)
 - **Contador de vida**: dias desde o 1º vídeo; incluído no backup
 
-### 4.6 Controle de Posts (painel fixo)
-- Sempre visível (sidebar fixa + ícone na bandeja)
-- Por canal: timer "quanto falta pro horário", marcar "já postei hoje"
-- Reset diário automático
-- Notificação nativa quando chega o horário
+### 4.6 Controle de Posts (painel fixo)  ✅ FEITO
+- Painel fixo à direita, sempre visível, colapsável (estado no localStorage)
+- Por canal (puxa de Canais): horários-alvo, countdown ao vivo
+  ("falta XhYm" / "atrasado"), marcar "postei hoje" (verde), adicionar/remover
+- Reset diário automático (posted = última data postada == hoje)
+- Incluído no backup (post_slots)
+- [ ] Pendente: notificação nativa quando chega o horário (via Tauri)
 
 ---
 

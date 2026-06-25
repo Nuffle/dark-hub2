@@ -175,6 +175,16 @@ export type Note = {
   updated_at: string;
 };
 
+export type PostSlot = {
+  id: string;
+  channel_id: string;
+  channel_name: string | null;
+  target_time: string;
+  last_posted_date: string;
+  created_at: string;
+  posted_today: boolean;
+};
+
 export type Sound = {
   id: string;
   name: string;
@@ -221,6 +231,26 @@ export const api = {
       request<Note>(`/notes/${id}`, { method: "PUT", body: JSON.stringify(data) }),
     remove: (id: string) =>
       request<{ deleted: string }>(`/notes/${id}`, { method: "DELETE" }),
+  },
+  posts: {
+    list: () => request<PostSlot[]>("/posts"),
+    create: (channel_id: string, target_time: string) =>
+      request<PostSlot>("/posts", {
+        method: "POST",
+        body: JSON.stringify({ channel_id, target_time }),
+      }),
+    update: (id: string, target_time: string) =>
+      request<PostSlot>(`/posts/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({ target_time }),
+      }),
+    setPosted: (id: string, posted: boolean) =>
+      request<{ slot_id: string; posted_today: boolean }>(`/posts/${id}/posted`, {
+        method: "POST",
+        body: JSON.stringify({ posted }),
+      }),
+    remove: (id: string) =>
+      request<{ deleted: string }>(`/posts/${id}`, { method: "DELETE" }),
   },
   sounds: {
     list: () => request<Sound[]>("/sounds"),

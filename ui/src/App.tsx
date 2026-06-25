@@ -6,6 +6,7 @@ import { WorldTimesWorkspace } from "@/components/WorldTimesWorkspace";
 import { ChannelsWorkspace } from "@/components/ChannelsWorkspace";
 import { NotesWorkspace } from "@/components/NotesWorkspace";
 import { SoundsWorkspace } from "@/components/SoundsWorkspace";
+import { PostControlPanel } from "@/components/PostControlPanel";
 import { MODULES, type ModuleId } from "@/modules";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -89,6 +90,8 @@ export default function App() {
           )}
         </section>
       </main>
+
+      <PostControlPanel />
     </div>
   );
 }

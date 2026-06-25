@@ -87,6 +87,15 @@ def initialize() -> None:
                 updated_at TEXT NOT NULL
             );
 
+            -- Controle de Posts: horários-alvo por canal + marca de "postei hoje".
+            CREATE TABLE IF NOT EXISTS post_slots (
+                id TEXT PRIMARY KEY,
+                channel_id TEXT NOT NULL,
+                target_time TEXT NOT NULL DEFAULT '',
+                last_posted_date TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL
+            );
+
             CREATE TABLE IF NOT EXISTS sounds (
                 id TEXT PRIMARY KEY,
                 name TEXT,
