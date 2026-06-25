@@ -1,0 +1,20 @@
+# Node
+node_modules/
+ui/dist/
+*.log
+
+# Python
+motor/.venv/
+__pycache__/
+*.pyc
+
+# Tauri (futuro)
+ui/src-tauri/target/
+
+# Dados locais e segredos
+data/
+*.db
+*.sqlite
+.env
+.env.local
+research_settings.json
