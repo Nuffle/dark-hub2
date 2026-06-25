@@ -12,6 +12,8 @@ import { api, type BackupSummary, type BackupSnapshot } from "@/lib/api";
 
 const TABLE_LABELS: Record<string, string> = {
   settings: "Configurações (inclui a chave da API)",
+  channels: "Canais",
+  notes: "Anotações",
   radar_outliers: "Acervo de outliers",
   radar_runs: "Buscas no histórico",
   video_snapshots: "Snapshots de vídeos (VPH)",

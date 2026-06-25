@@ -143,8 +143,54 @@ export type ImportResult = {
   imported_at: string;
 };
 
+export type Channel = {
+  id: string;
+  name: string;
+  channel_id: string;
+  url: string;
+  first_video_date: string;
+  niche: string;
+  created_at: string;
+  studio_url: string;
+  age_days: number | null;
+};
+
+export type ChannelInput = {
+  name: string;
+  channel_id?: string;
+  url?: string;
+  first_video_date?: string;
+  niche?: string;
+};
+
+export type Note = {
+  id: string;
+  title: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export const api = {
   health: () => request<Health>("/health"),
+  channels: {
+    list: () => request<Channel[]>("/channels"),
+    create: (data: ChannelInput) =>
+      request<Channel>("/channels", { method: "POST", body: JSON.stringify(data) }),
+    update: (id: string, data: ChannelInput) =>
+      request<Channel>(`/channels/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+    remove: (id: string) =>
+      request<{ deleted: string }>(`/channels/${id}`, { method: "DELETE" }),
+  },
+  notes: {
+    list: () => request<Note[]>("/notes"),
+    create: (data: { title: string; body: string }) =>
+      request<Note>("/notes", { method: "POST", body: JSON.stringify(data) }),
+    update: (id: string, data: { title: string; body: string }) =>
+      request<Note>(`/notes/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+    remove: (id: string) =>
+      request<{ deleted: string }>(`/notes/${id}`, { method: "DELETE" }),
+  },
   backup: {
     summary: () => request<BackupSummary>("/backup/summary"),
     export: () => request<BackupSnapshot>("/backup/export"),

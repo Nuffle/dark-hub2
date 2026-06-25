@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import db
-from .routers import backup, radar
+from .routers import backup, channels, notes, radar
 
 VERSION = "0.1.0"
 
@@ -33,6 +33,8 @@ app.add_middleware(
 
 
 app.include_router(radar.router, prefix="/api/radar", tags=["radar"])
+app.include_router(channels.router, prefix="/api/channels", tags=["channels"])
+app.include_router(notes.router, prefix="/api/notes", tags=["notes"])
 app.include_router(backup.router, prefix="/api/backup", tags=["backup"])
 
 

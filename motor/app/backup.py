@@ -17,6 +17,8 @@ SCHEMA_VERSION = 1
 # basta listar as novas tabelas aqui.
 EXPORT_TABLES = [
     "settings",
+    "channels",
+    "notes",
     "radar_outliers",
     "radar_runs",
     "video_snapshots",

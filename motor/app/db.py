@@ -66,5 +66,25 @@ def initialize() -> None:
                 opportunity_score INTEGER,
                 saved_at TEXT NOT NULL
             );
+
+            -- Canais do usuário (idade, link do Studio).
+            CREATE TABLE IF NOT EXISTS channels (
+                id TEXT PRIMARY KEY,
+                name TEXT NOT NULL,
+                channel_id TEXT NOT NULL DEFAULT '',
+                url TEXT NOT NULL DEFAULT '',
+                first_video_date TEXT NOT NULL DEFAULT '',
+                niche TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL
+            );
+
+            -- Anotações.
+            CREATE TABLE IF NOT EXISTS notes (
+                id TEXT PRIMARY KEY,
+                title TEXT NOT NULL DEFAULT '',
+                body TEXT NOT NULL DEFAULT '',
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL
+            );
             """
         )

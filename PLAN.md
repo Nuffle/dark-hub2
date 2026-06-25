@@ -122,9 +122,8 @@ Busca shorts virais fora da curva via YouTube Data API.
 - Local: arquivo + metadados; Cloud: R2 + D1
 - Limites de cota (igual ao atual: 9GB, 50MB/arquivo)
 
-### 4.3 Anotações
-- CRUD simples, tags, busca, autosave
-- Sincroniza com a nuvem
+### 4.3 Anotações  ✅ FEITO
+- CRUD (lista + editor) com autosave (debounce); incluído no backup
 
 ### 4.4 Horários do mundo  ✅ FEITO
 - Relógios ao vivo dos principais mercados (12 países), dia/noite, offset
@@ -132,11 +131,10 @@ Busca shorts virais fora da curva via YouTube Data API.
 - Marcadores de janela: horário nobre / almoço / madrugada
 - 100% frontend (fusos do navegador), sem backend
 
-### 4.5 Canais
-- Adicionar/remover
-- Botão "Abrir Studio" (deep link studio.youtube.com)
-- **Contador de vida**: dias desde o primeiro vídeo
-- Nicho, status
+### 4.5 Canais  ✅ FEITO
+- Adicionar/editar/remover; nicho
+- Botão "Abrir Studio" (ID UC… extraído da URL → studio.youtube.com/channel/ID)
+- **Contador de vida**: dias desde o 1º vídeo; incluído no backup
 
 ### 4.6 Controle de Posts (painel fixo)
 - Sempre visível (sidebar fixa + ícone na bandeja)
