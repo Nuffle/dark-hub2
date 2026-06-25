@@ -14,6 +14,10 @@ export default defineConfig({
   server: {
     port: 5180,
     strictPort: true,
+    // Não vigiar a pasta do Rust (target/) — evita EBUSY no .dll do Tauri.
+    watch: {
+      ignored: ["**/src-tauri/**"],
+    },
     proxy: {
       // Encaminha as chamadas da UI para o motor Python (FastAPI).
       '/api': {

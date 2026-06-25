@@ -56,6 +56,16 @@ o melhor possível, e preparado para crescer (CapCut, produção, etc.).
 - **Cloud (D1/R2)**: fonte de verdade sincronizável + arquivos pesados.
 - Estratégia híbrida: escreve local → sincroniza com a nuvem.
 
+### Portabilidade ("formatar o PC e trazer tudo de volta") — PRIORIDADE ALTA
+Duas pernas, ambas necessárias:
+1. **Código** → repositório Git (já versionado localmente; falta um remoto
+   GitHub privado para ficar fora da máquina).
+2. **Dados** (canais, sons, anotações, acervo, chave) → sincronizados na
+   **nuvem Cloudflare**. Hoje os dados vivem só em `motor/data/dark_hub.db`
+   (gitignored). **A sincronização na nuvem ainda NÃO existe** — é o que
+   falta para o cenário "formatei → reinstalei → restaurei → tudo de volta".
+   Enquanto isso, o backup manual = copiar `motor/data/dark_hub.db`.
+
 **Stack confirmada:**
 - Shell: Tauri 2 (Rust)
 - UI: React 18 + TypeScript + Vite
@@ -174,9 +184,11 @@ Fonte de dados escolhida: **YouTube Data API** (oficial, precisa).
 - [x] Motor Python (FastAPI) com `/api/health`, venv + deps
 - [x] UI ↔ motor conectados (proxy `/api`, badge "motor online")
 - [x] Layout principal + sidebar dos módulos
-- [ ] SQLite local + base do Worker Cloudflare
-- [ ] Encaixar shell Tauri (depende de Rust + MSVC Build Tools)
-- [ ] Bandeja do sistema (vem com o Tauri)
+- [x] SQLite local (motor/data/dark_hub.db)
+- [x] Encaixar shell Tauri (Rust instalado; app desktop com auto-start do motor)
+- [ ] Empacotar motor como sidecar (PyInstaller) + gerar instalador .exe
+- [ ] Bandeja do sistema (Tauri) para o Controle de Posts
+- [ ] Base do Worker Cloudflare + sincronização de dados (portabilidade)
 
 **Fase 1 — Radar (foco)**  ← EM ANDAMENTO
 - [x] Gestor de quota + busca YouTube API (search.list barato, enriquecimento)
