@@ -60,11 +60,14 @@ o melhor possível, e preparado para crescer (CapCut, produção, etc.).
 Duas pernas, ambas necessárias:
 1. **Código** → repositório Git (já versionado localmente; falta um remoto
    GitHub privado para ficar fora da máquina).
-2. **Dados** (canais, sons, anotações, acervo, chave) → sincronizados na
-   **nuvem Cloudflare**. Hoje os dados vivem só em `motor/data/dark_hub.db`
-   (gitignored). **A sincronização na nuvem ainda NÃO existe** — é o que
-   falta para o cenário "formatei → reinstalei → restaurei → tudo de volta".
-   Enquanto isso, o backup manual = copiar `motor/data/dark_hub.db`.
+2. **Dados** (acervo, histórico, configurações + futuros canais/sons/anotações):
+   - [x] **Motor de backup/restauração por arquivo** (`/api/backup/*` + módulo
+     "Nuvem" na UI): exporta um snapshot .json de tudo e restaura, com backup
+     de segurança automático antes de sobrescrever. Round-trip testado.
+     Já garante o cenário "formatei → restaurei" se guardar o arquivo.
+   - [ ] **Sincronização automática Cloudflare** (perna 2): empurrar/puxar o
+     snapshot para D1/R2 (recursos NOVOS; usuário tem conta). Reaproveita o
+     mesmo `export_snapshot()/import_snapshot()`.
 
 **Stack confirmada:**
 - Shell: Tauri 2 (Rust)

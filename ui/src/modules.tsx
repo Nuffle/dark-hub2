@@ -4,6 +4,7 @@ import {
   StickyNote,
   Globe,
   Tv,
+  Cloud,
   type LucideIcon,
 } from "lucide-react";
 
@@ -12,7 +13,8 @@ export type ModuleId =
   | "sons"
   | "anotacoes"
   | "horarios"
-  | "canais";
+  | "canais"
+  | "nuvem";
 
 export type ModuleDef = {
   id: ModuleId;
@@ -52,5 +54,11 @@ export const MODULES: ModuleDef[] = [
     label: "Horários",
     icon: Globe,
     description: "Fusos do mundo todo",
+  },
+  {
+    id: "nuvem",
+    label: "Nuvem",
+    icon: Cloud,
+    description: "Backup e portabilidade",
   },
 ];

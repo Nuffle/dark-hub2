@@ -124,8 +124,36 @@ export type RadarHistoryEntry = {
   created_at: string;
 };
 
+export type BackupSummary = {
+  counts: Record<string, number>;
+  last_local_backup: string | null;
+  schema: number;
+};
+
+export type BackupSnapshot = {
+  app: string;
+  schema: number;
+  exported_at: string;
+  tables: Record<string, unknown[]>;
+};
+
+export type ImportResult = {
+  restored: Record<string, number>;
+  safety_backup: string;
+  imported_at: string;
+};
+
 export const api = {
   health: () => request<Health>("/health"),
+  backup: {
+    summary: () => request<BackupSummary>("/backup/summary"),
+    export: () => request<BackupSnapshot>("/backup/export"),
+    import: (snapshot: BackupSnapshot) =>
+      request<ImportResult>("/backup/import", {
+        method: "POST",
+        body: JSON.stringify({ snapshot }),
+      }),
+  },
   radar: {
     config: () => request<RadarConfig>("/radar/config"),
     setKey: (youtube_api_key: string) =>
