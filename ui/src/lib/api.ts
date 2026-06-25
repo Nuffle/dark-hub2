@@ -7,12 +7,16 @@ export type Health = {
   version: string;
 };
 
+// Em dev, o Vite faz proxy de /api para o motor. No app empacotado não há
+// proxy, então falamos direto com o motor local.
+export const API_BASE = import.meta.env.PROD ? "http://127.0.0.1:8077/api" : "/api";
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const headers = new Headers(init?.headers);
   if (!(init?.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
-  const response = await fetch(`/api${path}`, {
+  const response = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers,
   });
@@ -297,8 +301,8 @@ export const api = {
       request<Sound>(`/sounds/${id}`, { method: "PUT", body: JSON.stringify(data) }),
     remove: (id: string) =>
       request<{ deleted: string }>(`/sounds/${id}`, { method: "DELETE" }),
-    streamUrl: (id: string) => `/api/sounds/${id}/stream`,
-    downloadUrl: (id: string) => `/api/sounds/${id}/download`,
+    streamUrl: (id: string) => `${API_BASE}/sounds/${id}/stream`,
+    downloadUrl: (id: string) => `${API_BASE}/sounds/${id}/download`,
   },
   backup: {
     summary: () => request<BackupSummary>("/backup/summary"),

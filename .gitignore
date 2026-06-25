@@ -8,8 +8,15 @@ motor/.venv/
 __pycache__/
 *.pyc
 
-# Tauri (futuro)
+# Tauri
 ui/src-tauri/target/
+ui/src-tauri/binaries/
+ui/src-tauri/gen/
+
+# Build do motor (PyInstaller)
+motor/dist/
+motor/build/
+motor/*.spec
 
 # Dados locais e segredos
 data/

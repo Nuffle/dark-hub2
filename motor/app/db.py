@@ -3,10 +3,21 @@ a nuvem (Cloudflare) entra como fonte sincronizável numa fase posterior.
 """
 from __future__ import annotations
 
+import os
 import sqlite3
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+
+def _data_root() -> Path:
+    # Em produção (app empacotado), o Tauri passa DARK_HUB_DATA apontando para
+    # uma pasta gravável do usuário (%APPDATA%). Em dev, usa motor/data.
+    env = os.environ.get("DARK_HUB_DATA")
+    if env:
+        return Path(env)
+    return Path(__file__).resolve().parent.parent / "data"
+
+
+DATA_DIR = _data_root()
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 DATABASE = DATA_DIR / "dark_hub.db"
 

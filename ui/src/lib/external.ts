@@ -48,6 +48,7 @@ export function installExternalLinkHandler(): void {
     if (!anchor) return;
     const href = anchor.getAttribute("href") || "";
     if (!/^https?:\/\//i.test(href)) return; // só links externos
+    if (/^https?:\/\/(127\.0\.0\.1|localhost)/i.test(href)) return; // motor local, não é externo
     event.preventDefault();
     void openExternal(href);
   });

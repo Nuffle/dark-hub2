@@ -1,44 +1,45 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "dark-hub2-api",
-  "main": "src/index.js",
-  "compatibility_date": "2026-06-25",
-  "workers_dev": true,
-  "preview_urls": false,
-  "observability": {
-    "enabled": true
-  },
-
-  // ── TRAVAS DE CUSTO (anti-cobrança) ──────────────────────────────
-  // O Worker recusa operações acima destes limites em vez de deixar
-  // estourar o nível grátis. Ajuste com folga abaixo dos limites reais.
-  "vars": {
-    "ALLOWED_ORIGIN": "http://localhost:5180,http://127.0.0.1:5180,tauri://localhost",
-    "STORAGE_LIMIT_BYTES": "9000000000",
-    "MAX_FILE_SIZE_BYTES": "50000000",
-    "MAX_SOUND_FILES": "5000",
-    "MAX_ASSET_FILES": "10000",
-    "MAX_STATE_SNAPSHOT_BYTES": "5000000",
-    "MAX_CLASS_A_OPERATIONS": "80000",
-    "MAX_CLASS_B_OPERATIONS": "800000"
-  },
-
-  // D1 (banco de metadados). O database_id é preenchido pelo
-  // configurar_cloud.ps1 ao criar o banco novo.
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "dark-hub2",
-      "database_id": "PREENCHER_AO_CRIAR",
-      "migrations_dir": "migrations"
-    }
-  ],
-
-  // R2 (arquivos de áudio dos sons).
-  "r2_buckets": [
-    {
-      "binding": "SOUNDS",
-      "bucket_name": "dark-hub2-sounds"
-    }
-  ]
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "dark-hub2-api",
+	"main": "src/index.js",
+	"compatibility_date": "2026-06-25",
+	"workers_dev": true,
+	"preview_urls": false,
+	"observability": {
+		"enabled": true
+	},
+	// â”€â”€ TRAVAS DE CUSTO (anti-cobranÃ§a) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+	// O Worker recusa operaÃ§Ãµes acima destes limites em vez de deixar
+	// estourar o nÃ­vel grÃ¡tis. Ajuste com folga abaixo dos limites reais.
+	"vars": {
+		"ALLOWED_ORIGIN": "http://localhost:5180,http://127.0.0.1:5180,tauri://localhost",
+		"STORAGE_LIMIT_BYTES": "9000000000",
+		"MAX_FILE_SIZE_BYTES": "50000000",
+		"MAX_SOUND_FILES": "5000",
+		"MAX_ASSET_FILES": "10000",
+		"MAX_STATE_SNAPSHOT_BYTES": "5000000",
+		"MAX_CLASS_A_OPERATIONS": "80000",
+		"MAX_CLASS_B_OPERATIONS": "800000"
+	},
+	// D1 (banco de metadados). O database_id Ã© preenchido pelo
+	// configurar_cloud.ps1 ao criar o banco novo.
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "dark-hub2",
+			"database_id": "a0671caa-36d5-4a2a-b2b5-38f932eb6ae9",
+			"migrations_dir": "migrations"
+		}
+	],
+	// R2 (arquivos de Ã¡udio dos sons).
+	"r2_buckets": [
+		{
+			"binding": "SOUNDS",
+			"bucket_name": "dark-hub2-sounds"
+		},
+		{
+			"bucket_name": "dark-hub2-sounds",
+			"binding": "dark_hub2"
+		}
+	]
 }
