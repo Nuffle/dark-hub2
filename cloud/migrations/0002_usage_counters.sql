@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS usage_counters (
+    month TEXT PRIMARY KEY,
+    class_a INTEGER NOT NULL DEFAULT 0,
+    class_b INTEGER NOT NULL DEFAULT 0
+);

@@ -18,3 +18,9 @@ data/
 .env
 .env.local
 research_settings.json
+
+# Cloudflare (segredos e build local)
+cloud/.cloud-token
+cloud/.cloud-url
+cloud/.wrangler/
+cloud/dist/
