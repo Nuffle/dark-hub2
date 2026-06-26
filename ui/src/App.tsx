@@ -7,6 +7,7 @@ import { ChannelsWorkspace } from "@/components/ChannelsWorkspace";
 import { NotesWorkspace } from "@/components/NotesWorkspace";
 import { SoundsWorkspace } from "@/components/SoundsWorkspace";
 import { PostControlPanel } from "@/components/PostControlPanel";
+import { UpdateBanner } from "@/components/UpdateBanner";
 import { MODULES, type ModuleId } from "@/modules";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -56,7 +57,9 @@ export default function App() {
   const current = MODULES.find((m) => m.id === active)!;
 
   return (
-    <div className="flex h-full w-full bg-background text-foreground">
+    <div className="flex h-full w-full flex-col bg-background text-foreground">
+      <UpdateBanner />
+      <div className="flex min-h-0 flex-1">
       <Sidebar active={active} onSelect={setActive} />
 
       <main className="flex flex-1 flex-col overflow-hidden">
@@ -92,6 +95,7 @@ export default function App() {
       </main>
 
       <PostControlPanel />
+      </div>
     </div>
   );
 }
