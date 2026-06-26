@@ -39,7 +39,7 @@ if ($LASTEXITCODE -ne 0) { Write-Host "tauri build falhou." -ForegroundColor Red
 $conf = Get-Content (Join-Path $root "ui\src-tauri\tauri.conf.json") -Raw | ConvertFrom-Json
 $version = $conf.version
 $nsisDir = Join-Path $root "ui\src-tauri\target\release\bundle\nsis"
-$setup = Get-ChildItem $nsisDir -Filter "*-setup.exe" | Select-Object -First 1
+$setup = Get-ChildItem $nsisDir -Filter "*-setup.exe" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 $sigFile = "$($setup.FullName).sig"
 $signature = (Get-Content $sigFile -Raw).Trim()
 
