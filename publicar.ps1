@@ -56,7 +56,8 @@ $manifest = [ordered]@{
   }
 }
 $latestPath = Join-Path $nsisDir "latest.json"
-$manifest | ConvertTo-Json -Depth 6 | Set-Content $latestPath -Encoding utf8
+# UTF-8 SEM BOM (o BOM quebra o parser do updater).
+[System.IO.File]::WriteAllText($latestPath, ($manifest | ConvertTo-Json -Depth 6), (New-Object System.Text.UTF8Encoding($false)))
 
 $tag = "v" + $version
 Write-Host "3/3 Pronto!" -ForegroundColor Green
