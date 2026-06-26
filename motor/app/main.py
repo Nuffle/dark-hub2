@@ -12,21 +12,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from . import db
 from .routers import backup, channels, cloud, notes, posts, radar, sounds
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 db.initialize()
 
 app = FastAPI(title="Dark Hub Motor", version=VERSION)
 
-# Em dev, a UI (Vite) roda em http://127.0.0.1:5180 e faz proxy de /api.
-# Mantemos o CORS aberto para o host local por segurança/portabilidade.
+# O motor escuta só em 127.0.0.1 (não exposto à rede). O webview do Tauri em
+# produção usa origens variadas (http(s)://tauri.localhost no Windows,
+# tauri://localhost em outros), e em dev é localhost:5180. Liberar todas as
+# origens é seguro aqui porque o serviço é loopback-only e sem cookies/credenciais.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5180",
-        "http://localhost:5180",
-        "tauri://localhost",
-    ],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

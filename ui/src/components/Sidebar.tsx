@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { MODULES, type ModuleId } from "@/modules";
 
@@ -7,6 +8,13 @@ type SidebarProps = {
 };
 
 export function Sidebar({ active, onSelect }: SidebarProps) {
+  const [version, setVersion] = useState("dev");
+  useEffect(() => {
+    import("@tauri-apps/api/app")
+      .then((m) => m.getVersion())
+      .then(setVersion)
+      .catch(() => setVersion("dev"));
+  }, []);
   return (
     <aside className="flex h-full w-60 shrink-0 flex-col border-r border-border bg-surface">
       <div className="flex items-center gap-2 px-5 py-5">
@@ -46,7 +54,7 @@ export function Sidebar({ active, onSelect }: SidebarProps) {
         })}
       </nav>
 
-      <div className="px-5 py-4 text-[11px] text-muted">v0.1 · Fase 0</div>
+      <div className="px-5 py-4 text-[11px] text-muted">v{version}</div>
     </aside>
   );
 }
