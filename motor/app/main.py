@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from . import db
 from .routers import backup, channels, cloud, notes, posts, radar, sounds
 
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 
 db.initialize()
 
