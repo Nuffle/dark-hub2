@@ -36,10 +36,6 @@
 		{
 			"binding": "SOUNDS",
 			"bucket_name": "dark-hub2-sounds"
-		},
-		{
-			"bucket_name": "dark-hub2-sounds",
-			"binding": "dark_hub2"
 		}
 	]
 }

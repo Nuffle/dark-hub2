@@ -241,8 +241,47 @@ export type SoundUpload = {
   tags?: string;
 };
 
+export type CloudUsage = {
+  used_bytes: number;
+  limit_bytes: number;
+  remaining_bytes: number;
+  percentage: number;
+  total_files: number;
+  max_files: number;
+  max_file_size_bytes: number;
+  uploads_blocked: boolean;
+  operations: {
+    class_a: number;
+    class_a_limit: number;
+    class_b: number;
+    class_b_limit: number;
+  };
+};
+
+export type CloudStatus = {
+  configured: boolean;
+  connected: boolean;
+  url?: string;
+  revision?: number;
+  remote_updated_at?: string;
+  remote_size_bytes?: number;
+  usage?: CloudUsage;
+  error?: string;
+};
+
 export const api = {
   health: () => request<Health>("/health"),
+  cloud: {
+    config: () => request<{ configured: boolean; url: string }>("/cloud/config"),
+    setConfig: (url: string, token: string) =>
+      request<CloudStatus>("/cloud/config", {
+        method: "PUT",
+        body: JSON.stringify({ url, token }),
+      }),
+    status: () => request<CloudStatus>("/cloud/status"),
+    push: () => request<{ revision: number; size_bytes: number }>("/cloud/push", { method: "POST" }),
+    pull: () => request<ImportResult>("/cloud/pull", { method: "POST" }),
+  },
   channels: {
     list: () => request<Channel[]>("/channels"),
     create: (data: ChannelInput) =>

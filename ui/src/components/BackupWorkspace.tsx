@@ -9,11 +9,15 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { api, type BackupSummary, type BackupSnapshot } from "@/lib/api";
+import { CloudSync } from "./CloudSync";
 
 const TABLE_LABELS: Record<string, string> = {
   settings: "Configurações (inclui a chave da API)",
   channels: "Canais",
   notes: "Anotações",
+  sounds: "Sons (metadados)",
+  post_slots: "Controle de posts (horários)",
+  post_channel_settings: "Controle de posts (config)",
   radar_outliers: "Acervo de outliers",
   radar_runs: "Buscas no histórico",
   video_snapshots: "Snapshots de vídeos (VPH)",
@@ -82,6 +86,8 @@ export function BackupWorkspace() {
 
   return (
     <div className="mx-auto flex h-full max-w-2xl flex-col gap-4 overflow-auto">
+      <CloudSync />
+
       {/* O que está guardado */}
       <div className="rounded-lg border border-border bg-surface p-5">
         <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold">

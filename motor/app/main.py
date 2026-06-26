@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import db
-from .routers import backup, channels, notes, posts, radar, sounds
+from .routers import backup, channels, cloud, notes, posts, radar, sounds
 
 VERSION = "0.1.0"
 
@@ -38,6 +38,7 @@ app.include_router(notes.router, prefix="/api/notes", tags=["notes"])
 app.include_router(posts.router, prefix="/api/posts", tags=["posts"])
 app.include_router(sounds.router, prefix="/api/sounds", tags=["sounds"])
 app.include_router(backup.router, prefix="/api/backup", tags=["backup"])
+app.include_router(cloud.router, prefix="/api/cloud", tags=["cloud"])
 
 
 @app.get("/api/health")
