@@ -165,6 +165,12 @@ def initialize() -> None:
             "yt_schedule_url",
             "yt_schedule_url TEXT NOT NULL DEFAULT ''",
         )
+        _ensure_column(
+            connection,
+            "sounds",
+            "cloud_id",
+            "cloud_id TEXT NOT NULL DEFAULT ''",
+        )
         connection.execute(
             """
             UPDATE channels

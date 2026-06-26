@@ -95,7 +95,8 @@ export function CloudSync() {
     setMsg(null);
     try {
       const r = await api.cloud.push();
-      setMsg({ kind: "ok", text: `Enviado para a nuvem (revisão ${r.revision}, ${fmtBytes(r.size_bytes)}).` });
+      const sons = r.sounds_uploaded ? ` · ${r.sounds_uploaded} som(ns) enviados` : "";
+      setMsg({ kind: "ok", text: `Enviado para a nuvem (revisão ${r.revision}, ${fmtBytes(r.size_bytes)})${sons}.` });
       refresh();
     } catch (e) {
       setMsg({ kind: "err", text: e instanceof Error ? e.message : "Falha ao enviar." });
@@ -111,7 +112,8 @@ export function CloudSync() {
     try {
       const r = await api.cloud.pull();
       const total = Object.values(r.restored).reduce((a, b) => a + b, 0);
-      setMsg({ kind: "ok", text: `Trazido da nuvem: ${total} registros restaurados.` });
+      const sons = r.sounds_downloaded ? ` · ${r.sounds_downloaded} som(ns) baixados` : "";
+      setMsg({ kind: "ok", text: `Trazido da nuvem: ${total} registros${sons}.` });
       refresh();
     } catch (e) {
       setMsg({ kind: "err", text: e instanceof Error ? e.message : "Falha ao trazer." });
@@ -234,7 +236,7 @@ export function CloudSync() {
         </p>
       )}
       <p className="mt-1 text-center text-[11px] text-muted">
-        Os arquivos de áudio (R2) entram numa próxima etapa; por ora sincroniza todos os dados/metadados.
+        Sincroniza todos os dados e os arquivos de som (R2). Formatou? Reinstale e clique em Trazer.
       </p>
     </div>
   );

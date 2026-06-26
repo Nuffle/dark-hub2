@@ -279,8 +279,13 @@ export const api = {
         body: JSON.stringify({ url, token }),
       }),
     status: () => request<CloudStatus>("/cloud/status"),
-    push: () => request<{ revision: number; size_bytes: number }>("/cloud/push", { method: "POST" }),
-    pull: () => request<ImportResult>("/cloud/pull", { method: "POST" }),
+    push: () =>
+      request<{ revision: number; size_bytes: number; sounds_uploaded: number; sounds_failed: number }>(
+        "/cloud/push",
+        { method: "POST" },
+      ),
+    pull: () =>
+      request<ImportResult & { sounds_downloaded: number }>("/cloud/pull", { method: "POST" }),
   },
   channels: {
     list: () => request<Channel[]>("/channels"),

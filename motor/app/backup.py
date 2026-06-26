@@ -51,10 +51,13 @@ def summary() -> dict[str, Any]:
     return {"counts": counts, "last_local_backup": last, "schema": SCHEMA_VERSION}
 
 
-def export_snapshot() -> dict[str, Any]:
+def export_snapshot(exclude: set[str] | None = None) -> dict[str, Any]:
+    exclude = exclude or set()
     tables: dict[str, list[dict[str, Any]]] = {}
     with db.connect() as connection:
         for table in EXPORT_TABLES:
+            if table in exclude:
+                continue
             rows = connection.execute(f"SELECT * FROM {table}").fetchall()
             tables[table] = [dict(row) for row in rows]
     return {
