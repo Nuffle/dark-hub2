@@ -1,5 +1,3 @@
-use tauri::Manager;
-
 // DEV: sobe o motor a partir do venv local (sem empacotar).
 #[cfg(debug_assertions)]
 fn start_motor(_app: &tauri::AppHandle) {
@@ -31,6 +29,7 @@ fn start_motor(_app: &tauri::AppHandle) {
 // pasta gravável do usuário (%APPDATA%) via DARK_HUB_DATA.
 #[cfg(not(debug_assertions))]
 fn start_motor(app: &tauri::AppHandle) {
+    use tauri::Manager;
     use tauri_plugin_shell::ShellExt;
 
     let data_dir = app
