@@ -31,7 +31,7 @@
       "endpoints": [
         "https://github.com/Nuffle/dark-hub2/releases/latest/download/latest.json"
       ],
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENFOEJBMzZCQjREN0FBQTQKUldTa3F0ZTBhNk9MenBRVmwrMGVmdjRSTUhSanNMWDFRMU14aTVHUDVjWmI2L25Ebjl1UGc2amMK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEE1MUI2Mzc1RDU1N0QzOTUKUldTVjAxZlZkV01icGVWWm1rUUozaWhzaVF5ZlE3SXBvMnViZnVCNE1DRTg3NzZ6OXBZOHZndFcK"
     }
   },
   "bundle": {
