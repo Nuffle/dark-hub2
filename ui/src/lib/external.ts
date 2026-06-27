@@ -5,19 +5,17 @@
 // usamos window.open.
 
 export function isTauri(): boolean {
-  return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
+  return typeof globalThis !== "undefined" && "isTauri" in globalThis;
 }
 
 export async function openExternal(url: string): Promise<void> {
   if (!url) return;
-  if (isTauri()) {
-    try {
-      const { invoke } = await import("@tauri-apps/api/core");
-      await invoke("open_external", { url });
-      return;
-    } catch {
-      // cai para o window.open abaixo
-    }
+  try {
+    const { invoke } = await import("@tauri-apps/api/core");
+    await invoke("open_external", { url });
+    return;
+  } catch {
+    // No navegador de desenvolvimento não há IPC do Tauri; cai para window.open.
   }
   window.open(url, "_blank", "noopener,noreferrer");
 }
@@ -37,5 +35,5 @@ export function installExternalLinkHandler(): void {
     if (/^https?:\/\/(127\.0\.0\.1|localhost)/i.test(href)) return; // motor local
     event.preventDefault();
     void openExternal(href);
-  });
+  }, true);
 }

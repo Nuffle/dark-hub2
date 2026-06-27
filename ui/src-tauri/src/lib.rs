@@ -13,6 +13,12 @@ fn open_external(app: tauri::AppHandle, url: String) -> Result<(), String> {
 }
 
 #[cfg(debug_assertions)]
+#[tauri::command]
+fn stop_motor() -> Result<(), String> {
+    Ok(())
+}
+
+#[cfg(debug_assertions)]
 fn start_motor_dev() {
     use std::process::Command;
 
@@ -40,7 +46,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
-        .invoke_handler(tauri::generate_handler![open_external])
+        .invoke_handler(tauri::generate_handler![open_external, stop_motor])
         .setup(|app| {
             app.handle().plugin(
                 tauri_plugin_log::Builder::default()
@@ -52,6 +58,20 @@ pub fn run() {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[cfg(not(debug_assertions))]
+type MotorState = std::sync::Arc<
+    std::sync::Mutex<Option<tauri_plugin_shell::process::CommandChild>>,
+>;
+
+#[cfg(not(debug_assertions))]
+#[tauri::command]
+fn stop_motor(motor: tauri::State<'_, MotorState>) -> Result<(), String> {
+    if let Some(child) = motor.lock().unwrap().take() {
+        child.kill().map_err(|error| error.to_string())?;
+    }
+    Ok(())
 }
 
 #[cfg(not(debug_assertions))]
@@ -70,7 +90,8 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
-        .invoke_handler(tauri::generate_handler![open_external])
+        .manage(motor.clone())
+        .invoke_handler(tauri::generate_handler![open_external, stop_motor])
         .setup(move |app| {
             let data_dir = app
                 .path()

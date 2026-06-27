@@ -21,9 +21,10 @@ export async function checkForUpdate(): Promise<UpdateInfo | null> {
 export async function installPending(onProgress?: (pct: number) => void): Promise<void> {
   if (!pending) return;
   const { relaunch } = await import("@tauri-apps/plugin-process");
+  const { invoke } = await import("@tauri-apps/api/core");
   let downloaded = 0;
   let total = 0;
-  await pending.downloadAndInstall((event) => {
+  await pending.download((event) => {
     if (event.event === "Started") {
       total = event.data.contentLength ?? 0;
     } else if (event.event === "Progress") {
@@ -31,5 +32,8 @@ export async function installPending(onProgress?: (pct: number) => void): Promis
       if (total > 0 && onProgress) onProgress(Math.round((downloaded / total) * 100));
     }
   });
+  await invoke("stop_motor");
+  await new Promise((resolve) => setTimeout(resolve, 1200));
+  await pending.install();
   await relaunch();
 }
