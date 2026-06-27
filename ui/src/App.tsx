@@ -71,26 +71,27 @@ export default function App() {
           <MotorBadge state={motor} />
         </header>
 
+        {/* Abas ficam montadas e só escondemos as inativas — assim o estado
+            (resultados do Radar, etc.) NÃO se perde ao trocar de aba. */}
         <section className="flex-1 overflow-hidden p-6">
-          {active === "radar" ? (
+          <div className={cn("h-full", active !== "radar" && "hidden")}>
             <RadarWorkspace />
-          ) : active === "nuvem" ? (
-            <BackupWorkspace />
-          ) : active === "horarios" ? (
-            <WorldTimesWorkspace />
-          ) : active === "canais" ? (
+          </div>
+          <div className={cn("h-full", active !== "canais" && "hidden")}>
             <ChannelsWorkspace />
-          ) : active === "anotacoes" ? (
-            <NotesWorkspace />
-          ) : active === "sons" ? (
+          </div>
+          <div className={cn("h-full", active !== "sons" && "hidden")}>
             <SoundsWorkspace />
-          ) : (
-            <div className="flex h-full items-center justify-center rounded-lg border border-dashed border-border text-muted">
-              Módulo
-              <span className="mx-1 font-medium text-foreground">{current.label}</span>
-              — em construção
-            </div>
-          )}
+          </div>
+          <div className={cn("h-full", active !== "anotacoes" && "hidden")}>
+            <NotesWorkspace />
+          </div>
+          <div className={cn("h-full", active !== "horarios" && "hidden")}>
+            <WorldTimesWorkspace />
+          </div>
+          <div className={cn("h-full", active !== "nuvem" && "hidden")}>
+            <BackupWorkspace />
+          </div>
         </section>
       </main>
 

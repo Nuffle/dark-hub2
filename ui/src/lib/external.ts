@@ -1,44 +1,30 @@
 // Abre URLs externas no navegador do sistema.
 // No app Tauri, o webview BLOQUEIA navegação externa (<a target="_blank"> não
-// faz nada), então usamos o plugin opener. No navegador (dev), usamos window.open.
-
-let openUrlFn: ((url: string) => Promise<void>) | null = null;
-let triedLoad = false;
+// faz nada), então chamamos um comando nativo no Rust (open_external), que é
+// mais confiável que o plugin via JS no app empacotado. No navegador (dev),
+// usamos window.open.
 
 export function isTauri(): boolean {
   return typeof window !== "undefined" && "__TAURI_INTERNALS__" in window;
 }
 
-async function ensureOpener(): Promise<void> {
-  if (openUrlFn || triedLoad) return;
-  triedLoad = true;
-  try {
-    const mod = await import("@tauri-apps/plugin-opener");
-    openUrlFn = mod.openUrl;
-  } catch {
-    openUrlFn = null;
-  }
-}
-
 export async function openExternal(url: string): Promise<void> {
   if (!url) return;
   if (isTauri()) {
-    await ensureOpener();
-    if (openUrlFn) {
-      try {
-        await openUrlFn(url);
-        return;
-      } catch {
-        // cai para o window.open abaixo
-      }
+    try {
+      const { invoke } = await import("@tauri-apps/api/core");
+      await invoke("open_external", { url });
+      return;
+    } catch {
+      // cai para o window.open abaixo
     }
   }
   window.open(url, "_blank", "noopener,noreferrer");
 }
 
 // Interceptador global: captura cliques em <a href="http(s)://..."> e roteia
-// pelo opener. Conserta todos os links externos do app de uma vez (Radar,
-// Canais, Controle de Posts) sem precisar mexer em cada componente.
+// pelo open_external. Conserta todos os links externos do app de uma vez
+// (Radar, Canais, Controle de Posts) sem precisar mexer em cada componente.
 export function installExternalLinkHandler(): void {
   if (typeof document === "undefined") return;
   document.addEventListener("click", (event) => {
@@ -48,7 +34,7 @@ export function installExternalLinkHandler(): void {
     if (!anchor) return;
     const href = anchor.getAttribute("href") || "";
     if (!/^https?:\/\//i.test(href)) return; // só links externos
-    if (/^https?:\/\/(127\.0\.0\.1|localhost)/i.test(href)) return; // motor local, não é externo
+    if (/^https?:\/\/(127\.0\.0\.1|localhost)/i.test(href)) return; // motor local
     event.preventDefault();
     void openExternal(href);
   });

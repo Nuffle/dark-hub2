@@ -2,6 +2,16 @@
 // scripts de dev). PRODUÇÃO: roda o sidecar empacotado e o ENCERRA ao sair do
 // app — assim o motor.exe não fica travado quando o updater for substituí-lo.
 
+// Abre uma URL externa no navegador do sistema (via Rust, sem depender do
+// escopo de permissão do plugin no JS — mais confiável no app empacotado).
+#[tauri::command]
+fn open_external(app: tauri::AppHandle, url: String) -> Result<(), String> {
+    use tauri_plugin_opener::OpenerExt;
+    app.opener()
+        .open_url(url, None::<&str>)
+        .map_err(|error| error.to_string())
+}
+
 #[cfg(debug_assertions)]
 fn start_motor_dev() {
     use std::process::Command;
@@ -30,6 +40,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        .invoke_handler(tauri::generate_handler![open_external])
         .setup(|app| {
             app.handle().plugin(
                 tauri_plugin_log::Builder::default()
@@ -59,6 +70,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        .invoke_handler(tauri::generate_handler![open_external])
         .setup(move |app| {
             let data_dir = app
                 .path()
